@@ -9217,8 +9217,8 @@ menu_backhaul() {
         local -a extra=()
         [[ -n "$(backhaul_legacy_units)" ]] && extra=("7|Move old Backhaul tunnels in|Tunnels made by the old Modified Backhaul script.")
         ui_menu c "Backhaul" "$(backhaul_status 2>&1)" \
-            "1|Set up the Iran server [PRO]|Asks whether to run it over GRE." \
-            "2|Set up the foreign server [PRO]|From the bh1_ / gh1_ bundle." \
+            "1|Set up the Iran server|Asks whether to run it over GRE." \
+            "2|Set up the foreign server|From the bh1_ / gh1_ bundle." \
             "3|Bundle for the foreign server|Print it again." \
             "4|Logs|Last 60 lines of the Backhaul services." \
             "5|Restart Backhaul|Server and client services on this machine." \
@@ -9360,8 +9360,7 @@ ui_status_refresh() {
         UI_PANEL="${GREEN}running${NC}"
         UI_URL=$(panel_address)
     fi
-    UI_LIC="Free"
-    [[ -x "$PANEL_BIN" ]] && "$PANEL_BIN" license check performance >/dev/null 2>&1 && UI_LIC="${GREEN}Pro${NC}"
+    UI_LIC="${GREEN}Community${NC}"
     UI_VER=$("$PANEL_BIN" --version 2>/dev/null | head -n1)
 }
 
@@ -9369,8 +9368,8 @@ ui_status_refresh() {
 ui_header() {
     ui_status_refresh
     if (( UI_TTY )); then printf '\033[H\033[2J'; else echo; fi
-    printf '%b %s%b  %b%s%b\n' "${BOLD}${CYAN}" "HASHEM" "$NC" "$DIM" "Tunnel Manager ${UI_VER}" "$NC"
-    printf ' Role: %b%s%b   Tunnel: %b   Panel: %b   License: %b\n' "$BOLD" "$UI_ROLE" "$NC" "$UI_TUN" "$UI_PANEL" "$UI_LIC"
+    printf '%b %s%b  %b%s%b\n' "${BOLD}${CYAN}" "DIDI" "$NC" "$DIM" "Tunnel Manager ${UI_VER}" "$NC"
+    printf ' Role: %b%s%b   Tunnel: %b   Panel: %b   Edition: %b\n' "$BOLD" "$UI_ROLE" "$NC" "$UI_TUN" "$UI_PANEL" "$UI_LIC"
     [[ -n "$UI_URL" ]] && printf ' Panel address: %b%s%b\n' "$CYAN" "$UI_URL" "$NC"
     ui_rule
     printf ' %b%s%b\n\n' "$BOLD" "$1" "$NC"
@@ -9533,8 +9532,8 @@ menu_setup() {
         ui_menu c "Setup" "Set this server up once; the other side takes the bundle it prints." \
             "-|Iran server" \
             "1|GRE + FRP (recommended)|The Iran server listens; foreign servers connect with a bundle." \
-            "2|Backhaul [PRO]|Backhaul, with or without GRE underneath." \
-            "3|Bagher [PRO]|Stealth hybrid tunnel over SSH." \
+            "2|Backhaul|Backhaul, with or without GRE underneath." \
+            "3|Bagher|Stealth hybrid tunnel over SSH." \
             "-|Foreign server" \
             "4|From a bundle (recommended)|Paste the hsh1_ / bh1_ / gh1_ bundle the Iran server printed." \
             "5|Step by step|Answer each question yourself (bundle or manual values)." \
@@ -9610,7 +9609,7 @@ menu_tunnel() {
 menu_bagher() {
     local c R_IP R_PORT R_PORTS R_POOL m
     while true; do
-        ui_menu c "Bagher [PRO]" "$(cli_bagher status 2>&1)" \
+        ui_menu c "Bagher" "$(cli_bagher status 2>&1)" \
             "1|Turn on|Forward ports to the foreign server over SSH (Bagher pool or direct SSH)." \
             "2|Turn off|Stop and remove Bagher." \
             "3|Start|Start the Bagher service." \
@@ -9626,7 +9625,7 @@ menu_bagher() {
                 [[ -z "$R_IP" ]] && { ui_pause; continue; }
                 ui_ask R_PORT "Foreign SSH port" "22"
                 ui_ask R_PORTS "Ports to forward" "443, 8443"
-                ui_ask m "Mode: 1 = Bagher pool [PRO], 2 = direct SSH" "1"
+                ui_ask m "Mode: 1 = Bagher pool, 2 = direct SSH" "1"
                 if [[ "$m" == "2" ]]; then
                     cli_bagher enable --remote-host "$R_IP" --ssh-port "$R_PORT" --ports "$R_PORTS" --mode direct
                 else
@@ -9915,9 +9914,9 @@ menu_backup() {
     local c f h d
     while true; do
         ui_menu c "Backup" "Encrypted snapshots of every config in ${BACKUP_DIR}." \
-            "1|Back up now [PRO]|An encrypted, dated snapshot." \
+            "1|Back up now|An encrypted, dated snapshot." \
             "2|Restore|Pick a snapshot; configs are replaced and services restarted." \
-            "3|Schedule [PRO]|Every N hours, daily at a time, or off." \
+            "3|Schedule|Every N hours, daily at a time, or off." \
             "4|Status and snapshots|Schedule, key and stored snapshots." \
             "5|Show the backup key|Needed to restore on another server."
         case "$c" in
@@ -10170,11 +10169,11 @@ menu_loop() {
             "1|Status|Tunnel, services and the panel address." \
             "2|Setup|Set this server up: Iran or foreign, GRE + FRP, Backhaul or Bagher." \
             "3|Tunnel|Peers, bundle, carrier, route, restart, tear down." \
-            "4|Bagher [PRO]|Stealth hybrid tunnel over SSH." \
-            "5|Cluster [PRO]|Pools of foreign servers, linked Iran hubs, failover." \
-            "6|Performance [PRO]|FRP and Backhaul options, pools, network tuning." \
-            "7|Watchdog [PRO]|Tunnel checks, Telegram alerts, encrypted backups." \
-            "8|Diagnostics [PRO]|Health check, fixes, ports, stress test." \
+            "4|Bagher|Stealth hybrid tunnel over SSH." \
+            "5|Cluster|Pools of foreign servers, linked Iran hubs, failover." \
+            "6|Performance|FRP and Backhaul options, pools, network tuning." \
+            "7|Watchdog|Tunnel checks, Telegram alerts, encrypted backups." \
+            "8|Diagnostics|Health check, fixes, ports, stress test." \
             "9|Logs|Live service logs." \
             "10|Backup|Back up, restore and schedule." \
             "11|Update|Update Hashem, channel, core binaries." \
@@ -10650,7 +10649,7 @@ auto_install_and_show() {
     echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${GREEN}${BOLD}DNC MADE THIS${NC}"
-    echo -e "Didi Tunnel Community (Bagher, Backhaul, Performance, Watchdog, Benchmark, Diagnostics): buy a license at ${CYAN}https://pdnczone.com${NC}"
+    echo -e "Didi Tunnel Community: all features are included without activation."
     echo ""
 
     if [[ -t 0 ]]; then
@@ -10698,7 +10697,7 @@ cli_bagher() {
     local SUB="${1:-status}"
     case "$SUB" in
         status)
-            echo -e "${CYAN}=== Hashem Bagher Engine [PRO] Status ===${NC}"
+            echo -e "${CYAN}=== Hashem Bagher Engine Status ===${NC}"
             local SVC_ACT="inactive"
             if systemctl is-active hashem-bagher.service >/dev/null 2>&1; then
                 SVC_ACT="${GREEN}active (running)${NC} [hashem-bagher.service]"
@@ -10802,7 +10801,7 @@ cli_bagher() {
             systemctl disable --now hashem-ssh-fwd.service hashem-ssh-frps.service >/dev/null 2>&1 || true
 
             if [[ "$MODE" == "bagher" || "$MODE" == "frp_ssh" ]]; then
-                echo -e "${CYAN}[*] Configuring Bagher Engine [PRO] (poolCount=${POOL_COUNT}, frpPort=${FRP_PORT})...${NC}"
+                echo -e "${CYAN}[*] Configuring Bagher Engine (poolCount=${POOL_COUNT}, frpPort=${FRP_PORT})...${NC}"
                 mkdir -p /etc/gre-panel/bagher
                 cat <<EOF > /etc/gre-panel/bagher/frps.toml
 bindAddr = "127.0.0.1"
@@ -10847,7 +10846,7 @@ EOF
                 systemctl daemon-reload
                 systemctl enable --now hashem-bagher-frps.service
                 systemctl enable --now hashem-bagher.service
-                echo -e "${GREEN}[OK] Bagher Engine [PRO] started and enabled.${NC}"
+                echo -e "${GREEN}[OK] Bagher Engine started and enabled.${NC}"
 
                 echo -e "\n${YELLOW}=== Foreign authorized_keys Entry ===${NC}"
                 echo -e "restrict,port-forwarding,permitlisten=\"127.0.0.1:${FRP_PORT}\" ${PUBKEY}\n"
