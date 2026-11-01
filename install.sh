@@ -2,8 +2,8 @@
 # Hashem one-line installer — resilient multi-mirror download & auto-setup.
 # Usage: bash <(curl -fsSL https://raw.githubusercontent.com/roboapi2/didi-tunnel/main/install.sh)
 set -euo pipefail
-# Build the Community panel from the standalone Didi Tunnel main branch.
-export HASHEM_SOURCE_REF="${HASHEM_SOURCE_REF:-main}"
+# By default install the checksum-verified Didi Tunnel release binary.
+# Set HASHEM_SOURCE_REF explicitly only when testing source builds with Go >= 1.23.
 
 if [[ $EUID -ne 0 ]]; then
     echo "Error: Please run as root (sudo)." >&2
